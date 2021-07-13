@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Excel</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="title-bar" contenteditable="">Book - 1</div>
+      <div class="menu-bar">
+        <p>File</p>
+        <p>Edit</p>
+        <p>Help</p>
+      </div>
+      <div class="menu-options">
+        <div id="bui">
+          <span class="material-icons"> format_bold </span>
+          <span class="material-icons"> format_italic </span>
+          <span class="material-icons"> format_underlined </span>
+        </div>
+        <div id="font-text-style">
+          <select id="font-select">
+            <option>Arial</option>
+            <option>open sans</option>
+            <option>Arial</option>
+            <option>Arial</option>
+          </select>
+          <select id="font-weight-select">
+            <option>10</option>
+            <option>12</option>
+            <option>16</option>
+            <option>18</option>
+            <option>20</option>
+          </select>
+        </div>
+        <div id="font-align-style">
+          <span class="material-icons"> align_horizontal_left </span>
+          <span class="material-icons"> align_horizontal_center </span>
+          <span class="material-icons"> align_horizontal_right </span>
+        </div>
+        <div id="font-color-style">
+          <span class="material-icons"> format_color_text </span>
+          <span class="material-icons"> format_color_fill </span>
+        </div>
+      </div>
+      <div class="formula-bar">
+        <input id="selected-cell-input" />
+        <input type="text" id="formula-input" placeholder="f(x)" />
+      </div>
+      <div class="grid">
+        <div id="Notation-grid">
+          <div id="empty-box"></div>
+          <div id="Alphabet-Notation"></div>
+          <div id="row-tag-cells"></div>
+        </div>
+        <div id="grid-table"></div>
+      </div>
+      <div class="sheet-bar"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
