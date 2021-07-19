@@ -44,6 +44,7 @@ for (let i = 1; i <= 100; i++) {
       fontSize: "10",
       underline: "false",
       italic: "false",
+      connectedNodes: [],
     };
 
     cell.addEventListener("click", function (ele) {
@@ -149,11 +150,18 @@ formaulaBar.addEventListener("change", function (e) {
   let formula = e.currentTarget.value;
   cellcontroller[selectedcell].formula = formula;
   let formularr = formula.split(" ");
+  let dependenton = [];
   for (let i = 0; i < formularr.length; i++) {
     if (cellcontroller[formularr[i]] != undefined) {
+      dependenton.push(formularr[i]);
       formularr[i] = cellcontroller[formularr[i]].value;
+      console.log("boom", cellcontroller[formularr[i]]);
     }
   }
+  if (checkCycle(dependenton) == 0) {
+    return;
+  }
+
   console.log(formularr);
   let formulawithval = formularr.join(" ");
   let newval = eval(formulawithval);
@@ -178,3 +186,66 @@ formaulaBar.addEventListener("change", function (e) {
   }
   console.log(cellcontroller[selectedcell]);
 });
+
+function addEdge(start, end) {
+  console.log(end);
+  cellcontroller[start][connectedNodes].push(end);
+  console.log(cellcontroller[start][connectedNodes]);
+  if (checkcircle(start)) {
+    alert("Circular Dependecy Formed ");
+    removeEdge(start, end);
+    return 0;
+  }
+  return 1;
+}
+
+function removeEdge(start, end) {
+  let cur = cellcontroller[start];
+  let newcur = [];
+  for (let i = 0; i < cur.length; i++) {
+    if (cur[i] == end) {
+      continue;
+    }
+    newcur.push(cur[i]);
+  }
+  cellcontroller[start] = newcur;
+}
+
+function checkCycle(dependenton) {
+  let ans = 1;
+  for (let i = 0; i < dependenton.length; i++) {
+    ans =
+      ans ||
+      addEdge(prevselected.getAttribute("data-address"), depeedndenton[i]);
+    if (ans == 0) {
+      for (let j = 0; j <= i; j++) {
+        removeEdge(prevselected.getAttribute("data-address"), dependenton[j]);
+      }
+      break;
+    }
+  }
+  return ans;
+}
+
+function dfs(visited, curnode) {
+  if (visited[curnode] == 1) {
+    return 1;
+  }
+  let ans = 0;
+  visited[curnode] = 1;
+  for (
+    let i = 0;
+    i < cellcontroller[cellcontroller][connectedNodes].length;
+    i++
+  ) {
+    if (dfs(visited, cellcontroller[cellcontroller][connectedNodes][i])) {
+      return 0;
+    }
+  }
+  visited[curnode] = 0;
+}
+
+function checkcircle(start) {
+  let visited = {};
+  dfs(visited, start);
+}
