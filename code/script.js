@@ -36,13 +36,21 @@ for (let i = 1; i <= 100; i++) {
       formula: "",
       downstream: [],
       upstream: [],
+      color: "black",
+      backgroundColor: "white",
+      textAlign: "left",
+      fontFamily: "Arial",
+      fontWeight: "normal",
+      fontSize: "10",
+      underline: "false",
+      italic: "false",
     };
 
     cell.addEventListener("click", function (ele) {
       if (prevselected != "") {
         prevselected.classList.remove("selected-cell");
       }
-      console.log(selectedCellDisplay);
+      // console.log(selectedCellDisplay);
       selectedCellDisplay.value = ele.target.getAttribute("data-address");
       ele.target.classList.add("selected-cell");
       formaulaBar.value =

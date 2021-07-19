@@ -142,14 +142,16 @@
 }
 .row {
   display: flex;
+  /* font-weight: ; */
 }
 .cell {
   flex-shrink: 0;
-  /* padding: 2px; */
+
   height: 32px;
   width: 80px;
   border: 1px lightskyblue solid;
   font-size: 20px;
+  font-weight: normal;
   overflow: hidden;
   outline: none;
 }
@@ -157,5 +159,12 @@
 .selected-cell {
   border: 2px blue solid;
   border-radius: 4px;
-  /* background-color: orchid; */
+}
+
+.material-icons:hover {
+  cursor: pointer;
+}
+.color-input {
+  top: 10%;
+  left: 80%;
 }
