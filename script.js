@@ -51,7 +51,6 @@ for (let i = 1; i <= 100; i++) {
       if (prevselected != "") {
         prevselected.classList.remove("selected-cell");
       }
-      // console.log(selectedCellDisplay);
       selectedCellDisplay.value = ele.target.getAttribute("data-address");
       ele.target.classList.add("selected-cell");
       formaulaBar.value =
@@ -105,7 +104,6 @@ function UpdateValueOnDownstream(targetaddress) {
   formwithval = arr.join(" ");
   let newval = eval(formwithval);
   cellcontroller[targetaddress].value = newval;
-  console.log(`[data-address=${targetaddress}]`);
   currentcell = document.querySelector(`[data-address=${targetaddress}]`);
   currentcell.innerText = cellcontroller[targetaddress].value;
   let curdownstream = cellcontroller[targetaddress].downstream;
@@ -145,24 +143,22 @@ function addOnUpstream(currentele, targetele) {
 //Input From Formula Bar
 
 formaulaBar.addEventListener("change", function (e) {
-  console.log(e.currentTarget.value);
   let selectedcell = prevselected.getAttribute("data-address");
   let formula = e.currentTarget.value;
-  cellcontroller[selectedcell].formula = formula;
-  let formularr = formula.split(" ");
-  let dependenton = [];
-  for (let i = 0; i < formularr.length; i++) {
-    if (cellcontroller[formularr[i]] != undefined) {
-      dependenton.push(formularr[i]);
-      formularr[i] = cellcontroller[formularr[i]].value;
-      console.log("boom", cellcontroller[formularr[i]]);
-    }
-  }
-  if (checkCycle(dependenton) == 0) {
+  let newupstream = makeUpstreamFromFormula(formula);
+  if (checkCycle(selectedcell, newupstream)) {
+    cellcontroller[selectedcell].connectedNodes =
+      cellcontroller[selectedcell].upstream;
     return;
   }
+  cellcontroller[selectedcell].formula = formula;
+  let formularr = formula.split(" ");
+  for (let i = 0; i < formularr.length; i++) {
+    if (cellcontroller[formularr[i]] != undefined) {
+      formularr[i] = cellcontroller[formularr[i]].value;
+    }
+  }
 
-  console.log(formularr);
   let formulawithval = formularr.join(" ");
   let newval = eval(formulawithval);
   cellcontroller[selectedcell].value = newval;
@@ -178,74 +174,31 @@ formaulaBar.addEventListener("change", function (e) {
   for (let i = 0; i < selectedcellupstream.length; i++) {
     removeFromUpstream(selectedcell, selectedcellupstream[i]);
   }
-  console.log(formula);
-  let newupstream = makeUpstreamFromFormula(formula);
   cellcontroller[selectedcell].upstream = newupstream;
   for (let i = 0; i < newupstream.length; i++) {
     addOnUpstream(selectedcell, newupstream[i]);
   }
-  console.log(cellcontroller[selectedcell]);
 });
 
-function addEdge(start, end) {
-  console.log(end);
-  cellcontroller[start][connectedNodes].push(end);
-  console.log(cellcontroller[start][connectedNodes]);
-  if (checkcircle(start)) {
-    alert("Circular Dependecy Formed ");
-    removeEdge(start, end);
-    return 0;
-  }
-  return 1;
-}
-
-function removeEdge(start, end) {
-  let cur = cellcontroller[start];
-  let newcur = [];
-  for (let i = 0; i < cur.length; i++) {
-    if (cur[i] == end) {
-      continue;
-    }
-    newcur.push(cur[i]);
-  }
-  cellcontroller[start] = newcur;
-}
-
-function checkCycle(dependenton) {
-  let ans = 1;
-  for (let i = 0; i < dependenton.length; i++) {
-    ans =
-      ans ||
-      addEdge(prevselected.getAttribute("data-address"), depeedndenton[i]);
-    if (ans == 0) {
-      for (let j = 0; j <= i; j++) {
-        removeEdge(prevselected.getAttribute("data-address"), dependenton[j]);
-      }
-      break;
-    }
-  }
-  return ans;
-}
-
-function dfs(visited, curnode) {
-  if (visited[curnode] == 1) {
+function checkCycle(root, newupstream) {
+  cellcontroller[root].connectedNodes = newupstream;
+  let visitedStack = {};
+  if (Cyclehelper(root, visitedStack)) {
     return 1;
   }
-  let ans = 0;
-  visited[curnode] = 1;
-  for (
-    let i = 0;
-    i < cellcontroller[cellcontroller][connectedNodes].length;
-    i++
-  ) {
-    if (dfs(visited, cellcontroller[cellcontroller][connectedNodes][i])) {
-      return 0;
-    }
-  }
-  visited[curnode] = 0;
+  return 0;
 }
-
-function checkcircle(start) {
-  let visited = {};
-  dfs(visited, start);
+function Cyclehelper(root, visitedStack) {
+  if (visitedStack[root] == 1) {
+    alert("Circular Dependency Formed");
+    return 1;
+  }
+  visitedStack[root] = 1;
+  let ans = 0;
+  for (let i = 0; i < cellcontroller[root].connectedNodes.length; i++) {
+    ans =
+      ans || Cyclehelper(cellcontroller[root].connectedNodes[i], visitedStack);
+  }
+  visitedStack[root] = 0;
+  return ans;
 }
